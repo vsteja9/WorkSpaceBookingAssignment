@@ -47,6 +47,7 @@ namespace WorkSpaceBookingAssignment.Models
         /// - Delete: context.Users.Remove(user); await context.SaveChangesAsync();
         /// </summary>
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Book> Books { get; set; } = null!;
 
         /// <summary>
         /// Fluent API for configuring the database schema

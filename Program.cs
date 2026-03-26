@@ -108,8 +108,7 @@ builder.Services.AddSwaggerGen();
 /// - Maximum Pool Size: Limit concurrent connections
 /// - Connection Lifetime: Recycle old connections
 /// </summary>
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("postgresql")));
 
 /// <summary>
 /// Repository Registration with Different Implementations
@@ -130,7 +129,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 /// - Create separate service interfaces (IInMemoryUserService, IDbUserService)
 /// - Or use factory pattern to decide at runtime
 /// </summary>
-
+builder.Services.AddSingleton<IUserService,UserService>();
 // Register In-Memory Repository as Singleton
 // Singleton because data should persist across requests within app lifetime
 // (Even though data lost on restart, it's consistent within session)
@@ -164,17 +163,39 @@ builder.Services.AddKeyedSingleton<IUserRepository, InMemoryUserRepository>("inm
 builder.Services.AddKeyedScoped<IUserRepository, PostgresUserRepository>("postgres");
 
 // Register two different UserService instances with keys
-builder.Services.AddKeyedScoped<IUserService, UserService>("inmemory", (sp, key) =>
-{
-    var repo = sp.GetRequiredKeyedService<IUserRepository>("inmemory");
-    return new UserService(repo);
-});
+// builder.Services.AddKeyedScoped<IUserService, UserService>("inmemory", (sp, key) =>
+// {
+//     var repo = sp.GetRequiredKeyedService<IUserRepository>("inmemory");
+//     return new UserService(repo);
+// });
 
-builder.Services.AddKeyedScoped<IUserService, UserService>("postgres", (sp, key) =>
-{
-    var repo = sp.GetRequiredKeyedService<IUserRepository>("postgres");
-    return new UserService(repo);
-});
+// builder.Services.AddKeyedScoped<IUserService, UserService>("postgres", (sp, key) =>
+// {
+//     var repo = sp.GetRequiredKeyedService<IUserRepository>("postgres");
+//     return new UserService(repo);
+// });
+
+/// <summary>
+/// Books Service Registration
+/// 
+/// Registering Books components for dependency injection:
+/// - BooksRepository: Scoped (tied to DbContext lifetime)
+/// - BooksService: Scoped (depends on scoped repository)
+/// 
+/// Scoped Lifetime:
+/// - New instance created per HTTP request
+/// - Shares DbContext instance within same request
+/// - Automatically disposed at end of request
+/// - Thread-safe within single request
+/// 
+/// Dependency Chain:
+/// BooksController → IBooksService → IBooksRepository → ApplicationDbContext
+/// </summary>
+builder.Services.AddScoped<WorkSpaceBookingAssignment.Repository.IBooksRepository,
+    WorkSpaceBookingAssignment.Repository.BooksRepository>();
+builder.Services.AddScoped<WorkSpaceBookingAssignment.Services.IBooksService,
+    WorkSpaceBookingAssignment.Services.BooksService>();
+
 
 /// <summary>
 /// Build Application

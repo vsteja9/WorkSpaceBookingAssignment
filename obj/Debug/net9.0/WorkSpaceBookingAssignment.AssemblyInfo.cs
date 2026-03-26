@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkSpaceBookingAssignment")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+988d10f200111694098706a7395bf06bf6c19b6c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0563ff61486c719875903f91038e3dfee8459723")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkSpaceBookingAssignment")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkSpaceBookingAssignment")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
